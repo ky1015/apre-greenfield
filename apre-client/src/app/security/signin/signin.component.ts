@@ -24,8 +24,10 @@ import { CookieService } from 'ngx-cookie-service';
           <input id="username" formControlName="username" type="text" class="signin__input" />
         </div>
         <div class="signin__form-group">
-          <label for="password" class="signin__label">Password</label>
-          <input id="password" formControlName="password" type="password" class="signin__input" />
+          <label for="password" class="signin__label">Password
+            <span class="required-asterisk">*</span>
+          </label>
+          <input id="password" formControlName="password" type="password" class="signin__input" required/>
         </div>
         <input type="submit" class="signin__button" Value="Submit" />
       </form>
@@ -72,6 +74,11 @@ import { CookieService } from 'ngx-cookie-service';
     .signin__input:focus {
       border-color: #20c997; /* Green border on focus */
       outline: none; /* Remove default outline */
+    }
+
+    .required-asterisk {
+      content: "*";
+      color: red;
     }
 
     .signin__button {
