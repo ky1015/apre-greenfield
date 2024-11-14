@@ -25,6 +25,7 @@ import { CookieService } from 'ngx-cookie-service';
         </div>
         <div class="signin__form-group">
           <label for="password" class="signin__label">Password
+          <!-- added span with new class to apply styles to the asterisk -->
             <span class="required-asterisk">*</span>
           </label>
           <input id="password" formControlName="password" type="password" class="signin__input" required/>
@@ -77,7 +78,6 @@ import { CookieService } from 'ngx-cookie-service';
     }
 
     .required-asterisk {
-      content: "*";
       color: red;
     }
 
