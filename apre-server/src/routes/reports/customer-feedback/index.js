@@ -92,4 +92,77 @@ router.get('/channel-rating-by-month', (req, res, next) => {
   }
 });
 
+// Customer Feedback by Customer API Routes
+
+/**
+ * @description
+ *
+ * GET /customers
+ *
+ * Fetches a list of distinct customerIds.
+ *
+ * Example:
+ * fetch('/customers')
+ *  .then(response => response.json())
+ *  .then(data => console.log(data));
+ */
+router.get('/customers', (req, res, next) => {
+  try {
+    mongo (async db => {
+      const customers = await db.collection('customerFeedback').distinct('customer');
+      res.send(customers);
+    }, next);
+  } catch (err) {
+    console.error('Error getting customers: ', err);
+    next(err);
+  }
+});
+
+/**
+ * @description
+ *
+ * GET /customer-feedback-by-customer
+ *
+ * Fetches feedback from a specific customer
+ *
+ * Example:
+ * fetch('/customer-feedback-by-customer/Jim+Halpert')
+ *  .then(response => response.json())
+ *  .then(data => console.log(data));
+ */
+router.get('/customer-feedback-by-customer/:customer?', (req, res, next) => {
+  const {customer} = req.params;
+
+  if (!customer) {
+    return res.status(400).json({
+     error: 'customer is required',
+     status: 400 });
+  }
+
+  try {
+    mongo (async db => {
+      const feedbackByCustomer = await db.collection('customerFeedback').aggregate([
+        { $match: { customer: req.params.customer } },
+        {
+          $group: {
+            _id: '$customer',
+            feedback: {$addToSet: '$feedbackText'} ,
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            customer: '$_id',
+            feedback: 1
+          }
+        },
+      ]).toArray();
+      res.send(feedbackByCustomer);
+    }, next);
+  } catch (err) {
+    console.error('Error getting feedback by customer: ', err);
+    next(err);
+  }
+});
+
 module.exports = router;
